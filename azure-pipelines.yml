@@ -22,13 +22,19 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-    - task: Maven@3
+    
+    - task: Maven@4
       inputs:
         mavenPomFile: 'pom.xml'
         goals: 'package'
-        options: '-DskipTests'
-        javaHomeOption: 'JDK17'
-        publishJUnitResults: false
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        javaHomeOption: 'JDKVersion'
+        jdkVersionOption: '1.17'              # ✅ Required with JDKVersion
+        mavenVersionOption: 'Default'
+        mavenAuthenticateFeed: false
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: false
 
     - task: Docker@2
       inputs:
