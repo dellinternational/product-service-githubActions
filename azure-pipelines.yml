@@ -53,8 +53,8 @@ stages:
       inputs:
         connectionType: 'Azure Resource Manager'
         azureSubscriptionEndpoint: '$(azureSubscriptionEndpoint)'
-        azureResourceGroup: 'your-resource-group'       # 👈 update this
-        kubernetesCluster: 'your-aks-cluster'           # 👈 update this
+        azureResourceGroup: 'springboot-rg'       # 👈 update this
+        kubernetesCluster: 'k8ssringbootapp'           # 👈 update this
         command: 'login'
         useClusterAdmin: true
 
