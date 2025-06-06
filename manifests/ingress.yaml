@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: product-ingress
+  namespace: default  # Change if you're using a different namespace
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"  # Set to "true" if using TLS
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: product.myapp.com  # Replace with your domain or use a dummy one for testing
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: product-service  # This must match the name of your Kubernetes Service
+                port:
+                  number: 80  # Make sure this is the service port exposed by product-service
