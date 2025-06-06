@@ -71,7 +71,6 @@ stages:
         kubernetesServiceConnection: '$(kubernetesServiceConnection)'
         namespace: '$(k8sNamespace)'
         manifests: |
-          $(manifestsPath)/product-deployment.yaml
-          $(manifestsPath)/product-service.yaml
+          $(manifestsPath)/*.yaml
         containers: |
           $(dockerImage)
