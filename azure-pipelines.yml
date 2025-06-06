@@ -4,11 +4,12 @@ trigger:
       - main
 
 variables:
-  dockerRegistryServiceConnection: 'acrConnection'
+  dockerRegistryServiceConnection: 'acrproductservice' # ACR service connection
   imageRepository: 'product-service'
-  containerRegistry: 'youracr.azurecr.io'
+  containerRegistry: 'acrsringbootapp1.azurecr.io'
   dockerImage: '$(containerRegistry)/$(imageRepository):$(Build.BuildId)'
-  kubernetesServiceConnection: 'aksConnection'
+  azureSubscriptionEndpoint: 'azureConnection'         # AzureRM connection
+  kubernetesServiceConnection: 'aksConnection'         # Kubernetes-type connection
   k8sNamespace: 'default'
   manifestsPath: 'manifests/'
 
@@ -48,14 +49,13 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
     - task: Kubernetes@1
-      displayName: 'Set Image'
+      displayName: 'Configure kubectl'
       inputs:
         connectionType: 'Azure Resource Manager'
-        azureSubscriptionEndpoint: '$(kubernetesServiceConnection)'
-        azureResourceGroup: 'your-resource-group'
-        kubernetesCluster: 'your-aks-cluster'
-        command: 'set'
-        arguments: ''
+        azureSubscriptionEndpoint: '$(azureSubscriptionEndpoint)'
+        azureResourceGroup: 'your-resource-group'       # 👈 update this
+        kubernetesCluster: 'your-aks-cluster'           # 👈 update this
+        command: 'login'
         useClusterAdmin: true
 
     - task: KubernetesManifest@0
