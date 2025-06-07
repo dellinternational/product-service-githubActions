@@ -4,17 +4,16 @@ trigger:
       - main
 
 variables:
-  dockerRegistryServiceConnection: 'acrproductservice'       # ✅ Must match your ACR service connection name
+  dockerRegistryServiceConnection: 'acrproductservice' # ACR service connection
   imageRepository: 'product-service'
   containerRegistry: 'acrsringbootapp1.azurecr.io'
   dockerImage: '$(containerRegistry)/$(imageRepository):$(Build.BuildId)'
-  azureSubscriptionEndpoint: 'azureConnection'               # ✅ Azure RM connection
-  kubernetesServiceConnection: 'aksConnection'               # ✅ Kubernetes service connection
+  azureSubscriptionEndpoint: 'azureConnection'         # AzureRM connection
+  kubernetesServiceConnection: 'aksConnection'         # Kubernetes-type connection
   k8sNamespace: 'default'
-  manifestsPath: 'manifests'
+  manifestsPath: 'manifests/'
 
 stages:
-# ---------------- Build Stage ----------------
 - stage: Build
   displayName: 'Build and Push Docker Image'
   jobs:
@@ -23,32 +22,29 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-    - task: Checkout@1
-      displayName: 'Checkout code'
-
+    
     - task: Maven@4
-      displayName: 'Build Spring Boot app with Maven'
       inputs:
         mavenPomFile: 'pom.xml'
         goals: 'package'
         publishJUnitResults: true
         testResultsFiles: '**/surefire-reports/TEST-*.xml'
         javaHomeOption: 'JDKVersion'
-        jdkVersionOption: '1.17'
+        jdkVersionOption: '1.17'              # ✅ Required with JDKVersion
         mavenVersionOption: 'Default'
         mavenAuthenticateFeed: false
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: false
 
     - task: Docker@2
-      displayName: 'Build and Push Docker image to ACR'
       inputs:
-        containerRegistry: '$(dockerRegistryServiceConnection)'  # ✅ Using correct variable here
+        containerRegistry: '$(dockerRegistryServiceConnection)'
         repository: '$(imageRepository)'
         command: 'buildAndPush'
-        Dockerfile: '**/Dockerfile'  # Adjust if your Dockerfile is nested
+        Dockerfile: '**/Dockerfile'
         tags: |
           $(Build.BuildId)
 
-# ---------------- Deploy Stage ----------------
 - stage: Deploy
   displayName: 'Deploy to AKS'
   dependsOn: Build
@@ -63,8 +59,8 @@ stages:
       inputs:
         connectionType: 'Azure Resource Manager'
         azureSubscriptionEndpoint: '$(azureSubscriptionEndpoint)'
-        azureResourceGroup: 'springbootapp-rg'       # ✅ Replace with your RG name
-        kubernetesCluster: 'k8ssringbootapp'         # ✅ Replace with your AKS cluster name
+        azureResourceGroup: 'springbootapp-rg'       # 👈 update this
+        kubernetesCluster: 'k8ssringbootapp'           # 👈 update this
         command: 'login'
         useClusterAdmin: true
 
@@ -74,6 +70,7 @@ stages:
         action: deploy
         kubernetesServiceConnection: '$(kubernetesServiceConnection)'
         namespace: '$(k8sNamespace)'
-        manifests: '$(manifestsPath)/*.yaml'
+        manifests: |
+          $(manifestsPath)/*.yaml
         containers: |
           $(dockerImage)
