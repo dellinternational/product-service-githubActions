@@ -22,7 +22,6 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-    
     - task: Maven@4
       inputs:
         mavenPomFile: 'pom.xml'
@@ -35,7 +34,15 @@ stages:
         mavenAuthenticateFeed: false
         effectivePomSkip: false
         sonarQubeRunAnalysis: false
-
+    - task: PublishTestResults@2
+      displayName: 'Publish JUnit Test Results'
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        searchFolder: '$(System.DefaultWorkingDirectory)'
+        mergeTestResults: true
+        failTaskOnFailedTests: false
     - task: Docker@2
       inputs:
         containerRegistry: '$(dockerRegistryServiceConnection)'
