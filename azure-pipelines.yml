@@ -5,7 +5,7 @@ trigger:
 
 variables:
   dockerRegistryServiceConnection: 'acrproductservice' # ACR service connection
-  imageRepository: 'product-service'
+  imageRepository: 'product-service1'
   containerRegistry: 'acrsringbootapp1.azurecr.io'
   dockerImage: '$(containerRegistry)/$(imageRepository):$(Build.BuildId)'
   azureSubscriptionEndpoint: 'azureConnection'         # AzureRM connection
