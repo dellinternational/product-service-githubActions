@@ -5,12 +5,12 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <!-- ✅ Add this parent to inherit Spring Boot dependency versions -->
+  <!-- ✅ Spring Boot Parent -->
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.2.5</version> <!-- Or use latest stable -->
-    <relativePath/> <!-- lookup parent from repository -->
+    <version>3.2.5</version>
+    <relativePath/>
   </parent>
 
   <groupId>com.example</groupId>
@@ -43,6 +43,33 @@
       <optional>true</optional>
     </dependency>
   </dependencies>
+
+  <!-- ✅ Azure Artifacts: Repository for consuming packages -->
+  <repositories>
+    <repository>
+      <id>sudarsan2026</id>
+      <url>https://pkgs.dev.azure.com/sudarsan2026/_packaging/sudarsan2026/maven/v1</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <!-- ✅ Azure Artifacts: Distribution management for publishing packages -->
+  <distributionManagement>
+    <repository>
+      <id>sudarsan2026</id>
+      <url>https://pkgs.dev.azure.com/sudarsan2026/_packaging/sudarsan2026/maven/v1</url>
+    </repository>
+    <snapshotRepository>
+      <id>sudarsan2026</id>
+      <url>https://pkgs.dev.azure.com/sudarsan2026/_packaging/sudarsan2026/maven/v1</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <build>
     <finalName>product-service</finalName>
     <plugins>
@@ -52,4 +79,5 @@
       </plugin>
     </plugins>
   </build>
+
 </project>
