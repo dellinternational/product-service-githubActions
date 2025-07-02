@@ -6,7 +6,7 @@ trigger:
 variables:
   dockerRegistryServiceConnection: 'acrproductservice' # ACR service connection
   imageRepository: 'product-service'
-  containerRegistry: 'acrsringbootapp1.azurecr.io'
+  containerRegistry: 'prod-aks.azurecr.io'
   dockerImage: '$(containerRegistry)/$(imageRepository):$(Build.BuildId)'
   azureSubscriptionEndpoint: 'azureConnection'         # AzureRM connection
   kubernetesServiceConnection: 'aksConnection'         # Kubernetes-type connection
