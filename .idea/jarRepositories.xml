@@ -16,5 +16,10 @@
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="sudarsan2026" />
+      <option name="name" value="sudarsan2026" />
+      <option name="url" value="https://pkgs.dev.azure.com/sudarsan2026/_packaging/sudarsan2026/maven/v1" />
+    </remote-repository>
   </component>
 </project>

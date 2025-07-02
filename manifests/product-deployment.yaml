@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: product
-          image: acrsringbootapp1.azurecr.io/product-service:$(Build.BuildId)
+          image: prod-aks.azurecr.io/product-service:$(Build.BuildId)
           ports:
             - containerPort: 8080
           env:
