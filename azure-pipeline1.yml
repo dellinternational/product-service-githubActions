@@ -101,6 +101,6 @@ stages:
              useClusterAdmin: true
 
           - script: |
-              kubectl apply -f k8s/${{ parameters.environment }}/deployment.yaml
-              kubectl apply -f k8s/${{ parameters.environment }}/service.yaml
+              kubectl apply -f manifests/${{ parameters.environment }}/deployment.yaml
+              kubectl apply -f manifests/${{ parameters.environment }}/service.yaml
             displayName: 'Deploy using kubectl'
