@@ -91,13 +91,14 @@ stages:
             displayName: 'Set AKS and RG variables'
 
           - task: Kubernetes@1
-            displayName: 'Set AKS context'
+            displayName: 'Configure kubectl'
             inputs:
-              connectionType: 'Azure Resource Manager'
-              azureSubscription: 'my-azure-subscription'
-              azureResourceGroup: '$(RESOURCE_GROUP)'
-              kubernetesCluster: '$(AKS_CLUSTER)'
-              command: login
+             connectionType: 'Azure Resource Manager'
+             azureSubscriptionEndpoint: '$(azureSubscriptionEndpoint)'
+             azureResourceGroup: 'prod-rg'       # 👈 update this
+             kubernetesCluster: 'prod-aks'           # 👈 update this
+             command: 'login'
+             useClusterAdmin: true
 
           - script: |
               kubectl apply -f k8s/${{ parameters.environment }}/deployment.yaml
