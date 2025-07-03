@@ -11,7 +11,7 @@ parameters:
     values:
       - dev
       - qa
-      - production
+      - prod
 
 pool:
   vmImage: 'ubuntu-latest'      
