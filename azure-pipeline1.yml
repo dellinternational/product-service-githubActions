@@ -13,6 +13,9 @@ parameters:
       - qa
       - production
 
+pool:
+  vmImage: 'ubuntu-latest'      
+
 variables:
   dockerRegistryServiceConnection: 'acrproductservice' # ACR service connection
   imageRepository: 'product-service'
@@ -22,6 +25,7 @@ variables:
   kubernetesServiceConnection: 'aksConnection'         # Kubernetes-type connection
   k8sNamespace: 'default'
   manifestsPath: 'manifests/'
+
 
 stages:
   - stage: Build
@@ -65,37 +69,37 @@ stages:
   - stage: Deploy
     displayName: 'Deploy to AKS'
     dependsOn: Build
-    environment: ${{ parameters.environment }}
     jobs:
-        - deployment: DeployApp
-          displayName: 'Deploy to ${{ parameters.environment }}'
-          environment: ${{ parameters.environment }}
-          strategy:
-            runOnce:
-              deploy:
-               steps:
-               - task: Kubernetes@1
-                 displayName: 'Configure kubectl'
-                 inputs:
-                   connectionType: 'Azure Resource Manager'
-                   azureSubscriptionEndpoint: '$(azureSubscriptionEndpoint)'
-                   azureResourceGroup: |
-                       ${{ if eq(parameters.environment, 'dev') }}: 'rg-dev'
-                       ${{ if eq(parameters.environment, 'qa') }}: 'rg-qa'
-                       ${{ if eq(parameters.environment, 'production') }}: 'prod-rg'
-                       kubernetesCluster: |
-                       ${{ if eq(parameters.environment, 'dev') }}: 'aks-dev'
-                       ${{ if eq(parameters.environment, 'qa') }}: 'aks-qa'
-                       ${{ if eq(parameters.environment, 'production') }}: 'prod-aks'
-                       command: 'login'
-                       useClusterAdmin: true
+    - deployment: DeployToAKS
+      displayName: 'Deploy to ${{ parameters.environment }}'
+      environment: ${{ parameters.environment }}  # <-- This triggers approval if environment is 'production'
+      strategy:
+       runOnce:
+        deploy:
+          steps:
+          - script: |
+              if [ '${{ parameters.environment }}' = 'dev' ]; then
+                echo "##vso[task.setvariable variable=RESOURCE_GROUP]rg-dev"
+                echo "##vso[task.setvariable variable=AKS_CLUSTER]aks-dev"
+              elif [ '${{ parameters.environment }}' = 'qa' ]; then
+                echo "##vso[task.setvariable variable=RESOURCE_GROUP]rg-qa"
+                echo "##vso[task.setvariable variable=AKS_CLUSTER]aks-qa"
+              else
+                echo "##vso[task.setvariable variable=RESOURCE_GROUP]rg-prod"
+                echo "##vso[task.setvariable variable=AKS_CLUSTER]aks-prod"
+              fi
+            displayName: 'Set AKS and RG variables'
 
-               - task: KubernetesManifest@1
-                 displayName: 'Deploy manifests to AKS'
-                 inputs:
-                   action: 'deploy'
-                   connectionType: 'kubernetesServiceConnection'
-                   kubernetesServiceConnection: 'aksConnection'
-                   namespace: '$(k8sNamespace)'
-                   manifests: '$(manifestsPath)/*.yaml'
-                   containers: '$(dockerImage)'
+          - task: Kubernetes@1
+            displayName: 'Set AKS context'
+            inputs:
+              connectionType: 'Azure Resource Manager'
+              azureSubscription: 'my-azure-subscription'
+              azureResourceGroup: '$(RESOURCE_GROUP)'
+              kubernetesCluster: '$(AKS_CLUSTER)'
+              command: login
+
+          - script: |
+              kubectl apply -f k8s/${{ parameters.environment }}/deployment.yaml
+              kubectl apply -f k8s/${{ parameters.environment }}/service.yaml
+            displayName: 'Deploy using kubectl'
