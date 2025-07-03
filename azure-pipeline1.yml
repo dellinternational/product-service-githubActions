@@ -100,7 +100,12 @@ stages:
              command: 'login'
              useClusterAdmin: true
 
-          - script: |
-              kubectl apply -f manifests/${{ parameters.environment }}/deployment.yaml
-              kubectl apply -f manifests/${{ parameters.environment }}/service.yaml
-            displayName: 'Deploy using kubectl'
+          - task: KubernetesManifest@1
+            displayName: 'Deploy manifests to AKS'
+            inputs:
+             action: 'deploy'
+             connectionType: 'kubernetesServiceConnection'
+             kubernetesServiceConnection: 'aksConnection'
+             namespace: '$(k8sNamespace)'
+             manifests: '$(manifestsPath)/*.yaml'
+             containers: '$(dockerImage)'
