@@ -71,13 +71,12 @@ stages:
         command: 'login'
         useClusterAdmin: true
 
-    - task: KubernetesManifest@0
+    - task: KubernetesManifest@1
       displayName: 'Deploy manifests to AKS'
       inputs:
-        action: deploy
-        kubernetesServiceConnection: '$(kubernetesServiceConnection)'
-        namespace: '$(k8sNamespace)'
-        manifests: |
-          $(manifestsPath)/*.yaml
-        containers: |
-          $(dockerImage)
+         action: 'deploy'
+         connectionType: 'kubernetesServiceConnection'
+         kubernetesServiceConnection: 'aksConnection'
+         namespace: '$(k8sNamespace)'
+         manifests: '$(manifestsPath)/*.yaml'
+         containers: '$(dockerImage)'
