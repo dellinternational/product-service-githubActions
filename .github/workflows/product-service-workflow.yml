@@ -1,13 +1,49 @@
-name: Hello CI
+name: Build and Deploy to AKS
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+
+env:
+  ACR_NAME: acrsuhi                 # without .azurecr.io
+  IMAGE_NAME: myapp-product-service
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
 
-      - name: Say Hello
-        run: echo "🎉 Hello from GitHub Actions!"
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v3
+
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Azure Container Registry Login
+      run: |
+        az acr login --name $ACR_NAME
+
+    - name: Build Docker Image
+      run: |
+        docker build -t $ACR_NAME.azurecr.io/$IMAGE_NAME:latest .
+
+    - name: Push Docker Image to ACR
+      run: |
+        docker push $ACR_NAME.azurecr.io/$IMAGE_NAME:latest
+
+    - name: Set AKS Context
+      uses: azure/aks-set-context@v3
+      with:
+        resource-group: "prod-rg"
+        cluster-name: "prod-aks"
+
+    - name: Deploy to AKS using kubectl
+      uses: Azure/k8s-deploy@v4
+      with:
+        manifests: |
+          manifests/deployment.yaml
+          manifests/service.yaml
+        images: ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
