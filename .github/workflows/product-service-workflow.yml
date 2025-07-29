@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      IMAGE_NAME: product-service-gitgubActions
+      IMAGE_NAME: product-service-gitgubactions
       ACR_LOGIN_SERVER: acrsuhi.azurecr.io  # replace with your ACR login server
       RESOURCE_GROUP: Prod-rg
       CLUSTER_NAME: prod-aks
