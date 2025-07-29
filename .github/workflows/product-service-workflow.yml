@@ -37,7 +37,7 @@ jobs:
     - name: Set AKS Context
       uses: azure/aks-set-context@v3
       with:
-        resource-group: "prod-rg"
+        resource-group: "Prod-rg"
         cluster-name: "prod-aks"
 
     - name: Deploy to AKS using kubectl
