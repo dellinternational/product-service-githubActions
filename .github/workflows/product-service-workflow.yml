@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      IMAGE_NAME: springboot-app
-      ACR_LOGIN_SERVER: myacr.azurecr.io  # replace with your ACR login server
-      RESOURCE_GROUP: my-rg
-      CLUSTER_NAME: my-aks-cluster
+      IMAGE_NAME: product-service-gitgubActions
+      ACR_LOGIN_SERVER: acrsuhi.azurecr.io  # replace with your ACR login server
+      RESOURCE_GROUP: Prod-rg
+      CLUSTER_NAME: prod-aks
 
     steps:
     - name: Checkout code
