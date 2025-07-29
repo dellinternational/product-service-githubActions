@@ -43,5 +43,10 @@ jobs:
     - name: Deploy to AKS using kubectl
       uses: Azure/k8s-deploy@v4
       with:
-        manifests: manifests/*.yaml
+        manifests: |
+         manifests/postgres-service.yaml
+         manifests/postgres-deployment.yaml
+         manifests/product-service.yaml
+         manifests/product-deployment.yaml
+         manifests/ingress.yaml
         images: ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
