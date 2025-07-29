@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: product
-          image: acrsuhi.azurecr.io/product-service-gitgubactions:$(Build.BuildId)
+          image: acrsuhi.azurecr.io/product-service-gitgubactions:latest
           ports:
             - containerPort: 8080
           env:
