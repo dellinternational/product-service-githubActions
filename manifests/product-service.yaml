@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: product-service
+  name: pproduct-service-gitgubactions
 spec:
   selector:
-    app: product-service
+    app: product-service-gitgubactions
   ports:
     - protocol: TCP
       port: 80
