@@ -14,7 +14,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: product-service
+                name: product-service-gitgubactions
                 port:
                   number: 80
           - path: /users
