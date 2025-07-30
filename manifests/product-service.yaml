@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: pproduct-service-gitgubactions
+  name: product-service-gitgubactions
 spec:
   selector:
     app: product-service-gitgubactions
